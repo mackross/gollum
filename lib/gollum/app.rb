@@ -153,9 +153,10 @@ module Precious
           end
           redirect to(live_preview_url)
         else
-          @page         = page
+          @page = page
           @page.version = wiki.repo.log(wiki.ref, @page.path).first
-          @content      = page.text_data
+          edit, @pre_edit_section, @post_edit_section = @page.find_section_for_edit(params[:section])
+          @content = edit.nil? ? page.text_data : edit
           mustache :edit
         end
       else
@@ -255,7 +256,7 @@ module Precious
       committer = Gollum::Committer.new(wiki, commit_message)
       commit    = { :committer => committer }
 
-      update_wiki_page(wiki, page, params[:content], commit, page.name, params[:format])
+      update_wiki_page(wiki, page, "#{params[:pre_edit_section]}#{params[:content]}#{params[:post_edit_section]}", commit, page.name, params[:format])
       update_wiki_page(wiki, page.header, params[:header], commit) if params[:header]
       update_wiki_page(wiki, page.footer, params[:footer], commit) if params[:footer]
       update_wiki_page(wiki, page.sidebar, params[:sidebar], commit) if params[:sidebar]

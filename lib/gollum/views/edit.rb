@@ -4,7 +4,7 @@ module Precious
       include Editable
       include HasPage
 
-      attr_reader :page, :content
+      attr_reader :page, :content, :post_edit_section, :pre_edit_section
 
       # return path set in app.rb not @page.path
       def path
